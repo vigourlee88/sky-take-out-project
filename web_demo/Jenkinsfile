@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('pull code ') {
             steps {
-               checkout scmGit(branches: [[name: '*/master']], 
+               checkout scmGit(branches: [[name: '*/${branch}']], 
                extensions: [],
                userRemoteConfigs: [[credentialsId: '8a643656-f20c-4837-a6bb-f3f5074c95ad', 
                                     url: 'git@192.168.110.100:itheima_group/web_demo.git']])
