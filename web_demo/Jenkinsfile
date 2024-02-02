@@ -20,7 +20,7 @@ pipeline {
 	            }
 	            //引入SonarQube的服务器环境
 	            withSonarQubeEnv('sonarqube') {
-	                sh "${scannerHome}/bin/sonar-scanner"
+	                sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=web_demo_pipeline -Dsonar.sources=."
 	            }
 	         }
          }
