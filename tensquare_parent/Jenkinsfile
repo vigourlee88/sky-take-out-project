@@ -1,19 +1,15 @@
 //定义 gitlab的凭证ID
 
-def git_auth = "8a643656-f20c-4837-a6bb-f3f5074c95ad"
+//def git_auth = "8a643656-f20c-4837-a6bb-f3f5074c95ad"
                
 
 //定义 gitlab的url地址
-def git_url = "git@192.168.110.100:itheima_group/tensquare_back.git"
+//def git_url = "git@192.168.110.100:itheima_group/tensquare_back.git"
            
 node {
 	　 　stage('拉取代码') {
-	      steps{
-		        checkout scmGit(
-			        branches: [[name: "*/${branch}"]], 
-			        extensions: [],
-			        userRemoteConfigs: [[credentialsId: "${git_auth}", url: "${git_url}"]]
-			    )	
-		    }											 
+	      
+		      checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '8a643656-f20c-4837-a6bb-f3f5074c95ad', url: 'git@192.168.110.100:itheima_group/tensquare_back.git']])
+		   										 
 	   }
 }
