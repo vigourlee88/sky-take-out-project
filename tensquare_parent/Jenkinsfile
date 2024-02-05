@@ -19,7 +19,7 @@ node {
       //引用当前JenkinsSonarQube环境
       withSonarQubeEnv('sonarqube'){
          sh """
-             cd /tensquare_parent/${project_name}
+             cd tensquare_back/tensquare_parent/${project_name}
              
              ${scannerHome}/bin/sonar-scanner
              
