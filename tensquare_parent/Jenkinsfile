@@ -15,12 +15,14 @@ node {
   
   stage('代码审查'){
       //定义当前Jenkins的SonarQubeScanner工具
-      def scannerHome = tools 'sonar-scanner'
+      def scannerHome = tool 'sonar-scanner'
       //引用当前JenkinsSonarQube环境
       withSonarQubeEnv('sonarqube'){
          sh """
-             cd /${project_name}
+             cd /tensquare_parent/${project_name}
+             
              ${scannerHome}/bin/sonar-scanner
+             
             """
       }
   }
