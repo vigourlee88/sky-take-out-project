@@ -33,6 +33,9 @@ node {
   }
   
   stage('编译，打包微服务工程'){
+  
+      sh "mvn -f tensquare_parent clean package"
+  
       sh "mvn -f tensquare_parent/${project_name} clean package"
   
   }
