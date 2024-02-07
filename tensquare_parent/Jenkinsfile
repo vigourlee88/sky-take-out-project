@@ -2,9 +2,18 @@
 
 def git_auth = "8a643656-f20c-4837-a6bb-f3f5074c95ad"
                
-
 //定义 gitlab的url地址
 def git_url = "git@192.168.110.100:itheima_group/tensquare_back.git"
+
+//镜像版本号
+def tag = "latest"
+
+//定义Harbor的url地址
+def harbor_url = "192.168.110.204:85"
+
+//镜像库项目名称
+def harbor_project = "tensquare"
+
            
 node {
   stage('拉取代码') {
@@ -32,12 +41,18 @@ node {
   
   }
   
-  stage('编译，打包微服务工程'){
+  stage('编译，打包微服务工程，上传镜像'){
   
       //sh "mvn -f tensquare_parent clean package"
   
       sh "mvn -f tensquare_parent/${project_name} clean package dockerfile:build"
   
+      //定义镜像名称
+      def imageName = "${project_name}:${tag}"
+      
+      //对镜像打上标签
+      sh "docker tag ${imageName} ${harbor_url}/${harbor_project}/${imageName}"
+      
   }
       
 }
