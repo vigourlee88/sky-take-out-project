@@ -17,6 +17,7 @@ def harbor_project = "tensquare"
 //Harbor的登录凭证ID
 def harbor_auth = "b9b1d424-08fc-4cd6-aa09-b4bf70576d45"
 
+
            
 node {
   stage('拉取代码') {
@@ -65,11 +66,25 @@ node {
          //镜像上传
          sh "docker push ${harbor_url}/${harbor_project}/${imageName}"
          
-         sh "echo 镜像上传成功"
-         
+         sh "echo 镜像上传成功"      
             
       }
       
   }
+  
+  //部署应用
+  sshPublisher(publishers: [sshPublisherDesc(configName: 'master_server',
+                                            transfers: [sshTransfer(cleanRemote: false, excludes: '', 
+	                                            execCommand: "/opt/jenkins_shell/deploy.sh $harbor_url $harbor_project $project_name $tag $port", 
+	                                            execTimeout: 120000,
+	                                            flatten: false, 
+	                                            makeEmptyDirs: false, 
+	                                            noDefaultExcludes: false, 
+	                                            patternSeparator: '[, ]+', 
+	                                            remoteDirectory: '', 
+	                                            remoteDirectorySDF: false, 
+	                                            removePrefix: '', sourceFiles: '')], 
+	                                            usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+  
       
 }
