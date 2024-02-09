@@ -70,7 +70,7 @@ node {
             
       }
       
-  }
+  
   
   //部署应用
   sshPublisher(publishers: [sshPublisherDesc(configName: 'master_server',
@@ -86,5 +86,5 @@ node {
 	                                            removePrefix: '', sourceFiles: '')], 
 	                                            usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
   
-      
+  }  
 }
