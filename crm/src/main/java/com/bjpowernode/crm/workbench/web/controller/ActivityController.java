@@ -33,6 +33,8 @@ import com.bjpowernode.crm.commons.utils.UUIDUtils;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.settings.service.UserService;
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ActivityRemark;
+import com.bjpowernode.crm.workbench.service.ActivityRemarkService;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 
 @Controller
@@ -43,6 +45,9 @@ public class ActivityController {
 
 	@Autowired
 	private ActivityService activityService;
+
+	@Autowired
+	private ActivityRemarkService activityRemarkService;
 
 	@RequestMapping("/workbench/activity/index.do")
 	public String index(HttpServletRequest request) {
@@ -322,15 +327,20 @@ public class ActivityController {
 		User user = (User) session.getAttribute(Contants.SESSION_USER);
 		ReturnObject returnObject = new ReturnObject();
 		try {
-			// 把接收到的excel文件写到磁盘目录中
-			String originalFilename = activityFile.getOriginalFilename();// 用户上传的文件名
-			File file = new File("D:\\BaiduNetdiskDownload\\动力节点CRM客户管理系统\\ServerDir\\", originalFilename);
-			activityFile.transferTo(file);
 
-			// 解析excel文件，获取文件中的数据，并且封斋难过成activityList
+			// 把接收到的excel文件写到磁盘目录中
+			// String originalFilename = activityFile.getOriginalFilename();// 用户上传的文件名
+			// File file = new
+			// File("D:\\BaiduNetdiskDownload\\动力节点CRM客户管理系统\\ServerDir\\",originalFilename);
+			// activityFile.transferTo(file);
+
+			// 解析excel文件，获取文件中的数据，并且封装成activityList
 			// 根据文件生成wb对象
-			InputStream is = new FileInputStream(
-					"D:\\BaiduNetdiskDownload\\动力节点CRM客户管理系统\\ServerDir\\" + originalFilename);
+			// InputStream is = new FileInputStream(
+			// "D:\\BaiduNetdiskDownload\\动力节点CRM客户管理系统\\ServerDir\\" + originalFilename);
+
+			InputStream is = activityFile.getInputStream();
+
 			HSSFWorkbook wb = new HSSFWorkbook(is);
 			HSSFSheet sheet = wb.getSheetAt(0);
 			// 根据sheet获取HSSFRow对象，封装了一行的所有信息
@@ -383,5 +393,26 @@ public class ActivityController {
 			returnObject.setMessage("系统忙，请稍后重试");
 		}
 		return returnObject;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/workbench/activity/detailActivity.do")
+	public String detailActivity(String id, HttpServletRequest request) {// 返回跳转页面的资源路径，字符串string
+		// 调用service层方法，查询数据
+		// 调市场活动的service,查询市场活动的信息
+		Activity activity = activityService.queryActivityForDetailById(id);
+		// 调用备注的service,需注入备注的service
+		List<ActivityRemark> remarkList = activityRemarkService.queryActivityRemarkForDetailByActivityId(id);
+
+		// 把数据保存到作用域request中(要注入HttpServletRequest request)
+		request.setAttribute("activity", activity);
+		request.setAttribute("remarkList", remarkList);
+		// 跳转(请求转发)到到明细页面
+		return "workbench/activity/detail";// 转发到的资源路径"workbench/activity/detail"
 	}
 }
