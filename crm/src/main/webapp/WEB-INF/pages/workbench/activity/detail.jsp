@@ -37,21 +37,42 @@
 			$("#remarkDiv").css("height","90px");
 			cancelAndSaveBtnDefault = true;
 		});
-		
+		/*
 		$(".remarkDiv").mouseover(function(){
 			$(this).children("div").children("div").show();
+		});*/
+		
+		//固有父元素remarkDivList,动态不行
+		//.on("事件类型(事件函数跟事件类型一一对应)",目标选择器(类选择器)",事件函数(回调函数));
+		//this表正在发生事件的div
+		//以下是给所有的div添加鼠标悬停的事件了
+		
+		$("#remarkDivList").on("mouseover",".remarkDiv",function(){
+		    $(this).children("div").children("div").show();
 		});
 		
-		$(".remarkDiv").mouseout(function(){
+		/*$(".remarkDiv").mouseout(function(){
 			$(this).children("div").children("div").hide();
+		});*/
+		//以下是给所有的div添加鼠标移开的事件了
+		$("#remarkDivList").on("mouseout",".remarkDiv",function(){
+		    $(this).children("div").children("div").hide();
 		});
 		
-		$(".myHref").mouseover(function(){
+		/*$(".myHref").mouseover(function(){
 			$(this).children("span").css("color","red");
+		});*/
+		
+		$("#remarkDivList").on("mouseover",".myHref",function(){
+		    $(this).children("span").css("color","red");
 		});
 		
-		$(".myHref").mouseout(function(){
+		/*$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
+		});*/
+		
+		$("#remarkDivList").on("mouseout",".myHref",function(){
+		    $(this).children("span").css("color","#E6E6E6");
 		});
 		
 		//给"保存"按钮添加单击事件
@@ -79,7 +100,7 @@
 		           activityId:activityId
 		       },
 		       type:'post',
-		       dateType:'json',   
+		       dataType:'json',   
 		       //处理响应
 		       success:function(data){
 		         //解析json,渲染页面
@@ -90,15 +111,15 @@
 		            //定义一个字符串拼接，动态数据改成从哪里取
 		            var htmlStr="";
 		            
-		            htmlStr+="<div class=\"remarkDiv\" style=\"height: 60px;\">";
+		            htmlStr+="<div id=\"div_"+data.retData.id+"\" class=\"remarkDiv\" style=\"height: 60px;\">";
 					htmlStr+="<img title=\"${sessionScope.sessionUser.name}\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">";
 					htmlStr+="<div style=\"position: relative; top: -40px; left: 40px;\" >";
 					htmlStr+="<h5>"+data.retData.noteContent+"</h5>";
 					htmlStr+="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font> <b>${activity.name}</b> <small style=\"color: gray;\"> "+data.retData.createTime+"由${sessionScope.sessionUser.name}创建</small>";
 					htmlStr+="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
-					htmlStr+="<a class=\"myHref\" remarkId=\""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+					htmlStr+="<a class=\"myHref\" name=\"editA\" remarkId=\""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
 					htmlStr+="&nbsp;&nbsp;&nbsp;&nbsp;";
-					htmlStr+="<a class=\"myHref\" remarkId=\""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+					htmlStr+="<a class=\"myHref\" name=\"deleteA\" remarkId=\""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
 					htmlStr+="</div>";
 					htmlStr+="</div>";
 		            htmlStr+="</div>";
@@ -113,6 +134,44 @@
 		       }
 		    
 		    });    
+		
+		});
+		
+		//给所有"删除"图标添加单击事件
+		//添加单击事件 传统方式/on(有可能新添加，动态生成)
+		//事件类型，目标选择器使用.myHref不可以，删除修改就一样了，需要自定义属性name,a[]a标签属性过滤
+		//这样就选择好了所有备注下的删除图标了
+		$("#remarkDivList").on("click","a[name='deleteA']",function(){
+		      //1.发请求
+		      //收集参数
+		      //扩展属性 只要不是value属性，自定义的属性只能通过html，找到jquery对象定义的函数,this表当前正在发生事件的元素-图标dom对象
+		      //自己生成的数据，不用去空格，验证合法不合法
+		      var id=$(this).attr("remarkId");
+		      //发送请求
+		      $.ajax({
+		         url:'workbench/activity/deleteActivityRemarkById.do',
+		         data:{
+		            id:id
+		         },
+		         type:'post',
+		         dataType:'json',
+		         //处理响应，从回调函数中处理
+		         success:function(data){
+		            if(data.code=="1"){
+			            //刷新备注列表
+			            //动态刷新，把div元素从页面删除即可
+			            //从页面删除元素remove,拿到元素的jquery对象
+			            //要定位div 父子标签 通过this找到parent，parent,parent
+			            //扩展属性的思想，定位标签，优先考虑id，每一个标签都有一个id值且不重复
+			            //remove从浏览器页面直接删掉某个元素
+			            $("#div_"+id).remove(); 
+		            }else{
+		                //提示信息
+		                alert(data.message);
+		            }
+		         }
+		     
+		      });	      
 		
 		});
 		
@@ -218,7 +277,7 @@
 	</div>
 	
 	<!-- 备注 -->
-	<div style="position: relative; top: 30px; left: 40px;">
+	<div id="remarkDivList" style="position: relative; top: 30px; left: 40px;">
 		<div class="page-header">
 			<h4>备注</h4>
 		</div>
@@ -227,16 +286,16 @@
 		<!-- 遍历哪个集合或数组 items=""并使用EL表达式获取,var=""表循环变量，执行循环体-->
 		<!-- EL表达式中使用的变量remark一定要是作用域中的数据-->
 		<c:forEach items="${remarkList}" var="remark">
-		    <div class="remarkDiv" style="height: 60px;">
+		    <div id="div_${remark.id}" class="remarkDiv" style="height: 60px;">
 				<img title="${remark.createBy}" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 					<div style="position: relative; top: -40px; left: 40px;" >
 						<h5>${remark.noteContent}</h5>
 						<!--<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> <c:if test="${remark.editFlag=='1'}">${remark.editTime}</c:if><c:if test="${remark.editFlag!='1'}">${remark.createTime}</c:if> 由zhangsan</small>-->
-						<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.editFlag=='1'?remark.editTime:remark.createTime} 由${remark.editFlag=='1'?remark.editBy:remark.createBy}${remark.editFlag=='1'?'创建':'修改'}</small>
+						<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.editFlag=='1'?remark.editTime:remark.createTime} 由${remark.editFlag=='1'?remark.editBy:remark.createBy}${remark.editFlag=='1'?'修改':'创建'}</small>
 						<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-							<a class="myHref" remarkId="${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+							<a class="myHref" name="editA" remarkId="${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 							&nbsp;&nbsp;&nbsp;&nbsp;
-							<a class="myHref" remarkId="${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+							<a class="myHref" name="deleteA" remarkId="${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 						</div>
 					</div>
 		    </div>
