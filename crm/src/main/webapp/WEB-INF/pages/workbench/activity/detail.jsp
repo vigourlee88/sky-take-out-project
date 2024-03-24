@@ -114,8 +114,8 @@
 		            htmlStr+="<div id=\"div_"+data.retData.id+"\" class=\"remarkDiv\" style=\"height: 60px;\">";
 					htmlStr+="<img title=\"${sessionScope.sessionUser.name}\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">";
 					htmlStr+="<div style=\"position: relative; top: -40px; left: 40px;\" >";
-					htmlStr+="<h5>"+data.retData.noteContent+"</h5>";
-					htmlStr+="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font> <b>${activity.name}</b> <small style=\"color: gray;\"> "+data.retData.createTime+"由${sessionScope.sessionUser.name}创建</small>";
+					htmlStr+="<h5 id=\"h5_"+data.retData.id+"\">"+data.retData.noteContent+"</h5>";
+					htmlStr+="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font> <b>${activity.name}</b> <small style=\"color: gray;\"> "+data.retData.createTime+" 由${sessionScope.sessionUser.name}创建</small>";
 					htmlStr+="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
 					htmlStr+="<a class=\"myHref\" name=\"editA\" remarkId=\""+data.retData.id+"\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
 					htmlStr+="&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -169,12 +169,71 @@
 		                //提示信息
 		                alert(data.message);
 		            }
-		         }
-		     
+		         }     
 		      });	      
-		
 		});
 		
+		//给所有的市场活动备注后边的"修改"图标添加单击事件on方式要找到 固有的父元素
+		$("#remarkDivList").on("click","a[name='editA']",function(){
+		    //获取备注的id和noteContent
+		    //现在每一个修改图标a标签跟所在的备注已经绑定了(自定义的属性remarkId)用html获取，获取这个图标的jQuery对象dom对象可转成$(this)
+		    //a标签找到父标签，再找到兄弟标签h5
+		    //a标签删除图标找到最大的备注标签div，一个删除图标对应一个div，点删除图标有对应备注id，每个备注对应一个div，拿到备注的id
+		    //<h5 id=\"h5_"+data.retData.id+"\">
+		    //父子选择器>直接，空格间接
+		    var id=$(this).attr("remarkId");//获取属性 备注id
+		    var noteContent=$("#div_"+id+" h5").text();//拿到h5标签中的内容
+		    //把备注的id和noteContent写到修改备注的模态窗口中
+		    //设置隐藏域<input type="hidden" id="edit-id">
+            $("#edit-id").val(id);//拿到隐藏域，设置value属性值
+            $("#edit-noteContent").val(noteContent);//备注内容写入模态窗口中
+            
+            //弹出修改市场活动备注的模态窗口
+            $("#editRemarkModal").modal("show");
+		});
+		
+		//给"更新"按钮添加单击事件
+		$("#updateRemarkBtn").click(function(data){
+		    //发请求处理响应
+		    //收集参数 id和noteContent id隐藏域中edit-id,备注框中内容edit-noteContent
+		    var id=$("#edit-id").val();
+		    var noteContent=$.trim($("#edit-noteContent").val());//用户自己输入的需去空格
+		    //表单验证
+		    //备注内容，不能为空
+		    if(noteContent==""){
+		       alert("备注内容不能为空");
+		       return;//后面代码都不执行了
+		    }
+		    //发送请求 异步
+		    $.ajax({
+		       url:'workbench/activity/saveEditActivityRemark.do',
+		       data:{//参数
+		          id:id,
+		          noteContent:noteContent 
+		       },
+		       type:'post',
+		       dataType:'json',
+		       success:function(data){
+		          if(data.code=="1"){
+		             //关闭模态窗口
+		             $("#editRemarkModal").modal("hide");
+		             //刷新备注列表 data.retData.id也可以
+		             $("#div_"+id+" h5").text(data.retData.noteContent);//h5标签内容，覆盖显示
+		             //更新时间 small标签  当前用户中取 js中使用EL表达式必须放""中
+		             $("#div_"+id+" small").text(" "+data.retData.editTime+" 由${sessionScope.sessionUser.name}修改");
+		             
+		          }else{
+		             //提示信息
+		             alert(data.message);
+		             //模态窗口不关闭
+		             $("#editRemarkModal").modal("show");
+		          
+		          }    
+		       }  
+		    
+		    });
+		});
+			
 	});
 	
 </script>
@@ -196,10 +255,11 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
+                      <input type="hidden" id="edit-id">
                         <div class="form-group">
-                            <label for="noteContent" class="col-sm-2 control-label">内容</label>
+                            <label for="edit-noteContent" class="col-sm-2 control-label">内容</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="noteContent"></textarea>
+                                <textarea class="form-control" rows="3" id="edit-noteContent"></textarea>
                             </div>
                         </div>
                     </form>
