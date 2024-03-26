@@ -19,7 +19,11 @@ import com.bjpowernode.crm.settings.domain.DicValue;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.settings.service.DicValueService;
 import com.bjpowernode.crm.settings.service.UserService;
+import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.Clue;
+import com.bjpowernode.crm.workbench.domain.ClueRemark;
+import com.bjpowernode.crm.workbench.service.ActivityService;
+import com.bjpowernode.crm.workbench.service.ClueRemarkService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 
 @Controller
@@ -33,6 +37,12 @@ public class ClueController {
 
 	@Autowired
 	private ClueService clueService;
+
+	@Autowired
+	private ClueRemarkService clueRemarkService;
+
+	@Autowired
+	private ActivityService activityService;
 
 	// 跳转页面
 	@RequestMapping("/workbench/clue/index.do")
@@ -80,4 +90,19 @@ public class ClueController {
 		return returnObject;
 	}
 
+	// 查看线索明细，跳转页面
+	@RequestMapping("/workbench/clue/detailClue.do")
+	public String detailClue(String id, HttpServletRequest request) {
+		// 调用service层方法，查询数据(一个参数不需要封装参数)
+		// 首先查基本信息
+		Clue clue = clueService.queryClueForDetailById(id);
+		List<ClueRemark> remarkList = clueRemarkService.queryClueRemarkForDetailByClueId(id);
+		List<Activity> activityList = activityService.queryActivityForDetailByClueId(id);
+		// 把动态数据保存到页面作用域中request
+		request.setAttribute("clue", clue);
+		request.setAttribute("remarkList", remarkList);
+		request.setAttribute("activityList", activityList);
+		// 请求转发
+		return "workbench/clue/detail";
+	}
 }
