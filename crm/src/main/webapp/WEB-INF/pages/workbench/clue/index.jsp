@@ -12,6 +12,8 @@
 
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css">
+
 
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
@@ -21,82 +23,77 @@
 <script type="text/javascript">
 
 	$(function(){
-	   //给"创建"按钮添加单击事件
-	   $("#createClueBtn").click(function(){
-		   //初始化工作(表单重置)
-		   $("#createClueForm")[0].reset();//拿到jquery对象，进而dom对象重置
-		   //弹出模态窗口
-		   $("#createClueModal").modal("show");
-	   });
-	   
-	   //给"保存"按钮添加单击事件
-	   $("#saveCreateClueBtn").click(function(){
-	      //发请求，处理响应
-	      //收集参数
-	      var fullname       = $.trim($("#create-fullname").val());
-	      var appellation    = $("#create-appellation").val();
-	      var owner          = $("#create-owner").val();
-	      var company        = $.trim($("#create-company").val());
-	      var job            = $.trim($("#create-job").val());
-	      var email          = $.trim($("#create-email").val());
-	      var phone          = $.trim($("#create-phone").val());
-	      var website        = $.trim($("#create-website").val());
-	      var mphone         = $.trim($("#create-mphone").val());
-	      var state          = $("#create-state").val();
-	      var source         = $("#create-source").val();
-	      var description    = $.trim($("#create-description").val());
-	      var contactSummary = $.trim($("#create-contactSummary").val());
-	      var nextContactTime= $.trim($("#create-nextContactTime").val());
-	      var address        = $.trim($("#create-address").val());
-	      //表单验证
-	      //带*非空
-	      //正则表达式验证
-	      
-	      //发送请求
-	      $.ajax({
-	    	  
-	    	  url:'workbench/clue/saveCreateClue.do',
-	    	  data:{
-	    		  
-	    		fullname       :fullname       ,
-	    		appellation    :appellation    ,
-	    		owner          :owner          ,
-	    		company        :company        ,
-	    		job            :job            ,
-	    		email          :email          ,
-	    		phone          :phone          ,
-	    		website        :website        ,
-	    		mphone         :mphone         ,
-	    		state          :state          ,
-	    		source         :source         ,
-	    		description    :description    ,
-	    		contactSummary :contactSummary ,
-	    		nextContactTime:nextContactTime,
-	    		address        :address                          
-	    		  
-	    	  },
-	    	  type:'post',
-	    	  dataType:'json',
-	    	  success:function(data){
-	    		  if(data.code=="1"){
-	    			  //关闭模态窗口
-	    			  $("#createClueModal").modal("hide");
-	    			  //刷新线索列表，显示第一页数据，保持每页显示条数不变
-	    			  
-	    		  }else{
-	    			  //提示信息
-	    			  alert(data.message);
-	    			  //模态窗口不关闭
-	    			  $("#createClueModal").modal("show");
-	    			  //列表也不刷新
-	    		  }
-	    	  }
-	      });
-	       
-	   });	
-		
+	    //给"创建"按钮添加单击事件
+        $("#createClueBtn").click(function () {
+            //初始化工作
+            $("#createClueForm")[0].reset();
+            //弹出模态窗口
+            $("#createClueModal").modal("show");
+        });
+
+		//给"保存"按钮添加单击事件
+        $("#saveCreateClueBtn").click(function () {
+            //收集参数
+            var fullname       =$.trim($("#create-fullname").val());
+            var appellation    =$("#create-appellation").val();
+            var owner          =$("#create-owner").val();
+            var company        =$.trim($("#create-company").val());
+            var job            =$.trim($("#create-job").val());
+            var email          =$.trim($("#create-email").val());
+            var phone          =$.trim($("#create-phone").val());
+            var website        =$.trim($("#create-website").val());
+            var mphone         =$.trim($("#create-mphone").val());
+            var state          =$("#create-state").val();
+            var source         =$("#create-source").val();
+            var description    =$.trim($("#create-description").val());
+            var contactSummary =$.trim($("#create-contactSummary").val());
+            var nextContactTime=$.trim($("#create-nextContactTime").val());
+            var address        =$.trim($("#create-address").val());
+            //表单验证(作业)
+            //带*非空
+            //正则表达式验证
+
+            //发送请求
+            $.ajax({
+                url:'workbench/clue/saveCreateClue.do',
+                data:{
+                     fullname       :fullname       ,
+                     appellation    :appellation    ,
+                     owner          :owner          ,
+                     company        :company        ,
+                     job            :job            ,
+                     email          :email          ,
+                     phone          :phone          ,
+                     website        :website        ,
+                     mphone         :mphone         ,
+                     state          :state          ,
+                     source         :source         ,
+                     description    :description    ,
+                     contactSummary :contactSummary ,
+                     nextContactTime:nextContactTime,
+                     address        :address
+                },
+                type:'post',
+                dataType:'json',
+                success:function (data) {
+                    if(data.code=="1"){
+                        //关闭模态窗口
+                        $("#createClueModal").modal("hide");
+                        //刷新线索列表，显示第一页数据，保持每页显示条数不变(作业)
+
+                    }else{
+                        //提示信息
+                        alert(data.message);
+                        //模态窗口不关闭
+                        $("#createClueModal").modal("show");
+                    }
+                }
+            });
+        });
+
+
 	});
-	
+
 </script>
 </head>
 <body>
@@ -119,8 +116,8 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-owner">
 								  <c:forEach items="${userList}" var="u">
-								     <option value="${u.id}">${u.name}</option>
-								  </c:forEach>
+                                      <option value="${u.id}">${u.name}</option>
+                                  </c:forEach>
 								</select>
 							</div>
 							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -134,9 +131,9 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-appellation">
 								  <option></option>
-									  <c:forEach items="${appellationList}" var="app">
-									     <option value="${app.id}">${app.value}</option>
-									  </c:forEach>
+								  <c:forEach items="${appellationList}" var="app">
+                                    <option value="${app.id}">${app.value}</option>
+                                  </c:forEach>
 								</select>
 							</div>
 							<label for="create-fullname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -176,9 +173,9 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-state">
 								  <option></option>
-								    <c:forEach items="${clueStateList}" var="cs">
-								      <option value="${cs.id}">${cs.value}</option>
-								    </c:forEach>
+								  <c:forEach items="${clueStateList}" var="cs">
+                                        <option value="${cs.id}">${cs.value}</option>
+                                  </c:forEach>
 								</select>
 							</div>
 						</div>
@@ -188,9 +185,9 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-source">
 								  <option></option>
-								    <c:forEach items="${sourceList}" var="sl">
-								      <option value="${sl.id}">${sl.value}</option>
-								    </c:forEach>
+								  <c:forEach items="${sourceList}" var="sl">
+                                      <option value="${sl.id}">${sl.value}</option>
+                                  </c:forEach>
 								</select>
 							</div>
 						</div>
@@ -258,9 +255,9 @@
 							<label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-clueOwner">
-								  <c:forEach items="${userList}" var="u">
-								     <option value="${u.id}">${u.name}</option>
-								  </c:forEach>
+                                    <c:forEach items="${userList}" var="u">
+                                        <option value="${u.id}">${u.name}</option>
+                                    </c:forEach>
 								</select>
 							</div>
 							<label for="edit-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -274,9 +271,9 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-call">
 								  <option></option>
-									  <c:forEach items="${appellationList}" var="app">
-									     <option value="${app.id}">${app.value}</option>
-									  </c:forEach>
+                                    <c:forEach items="${appellationList}" var="app">
+                                        <option value="${app.id}">${app.value}</option>
+                                    </c:forEach>
 								</select>
 							</div>
 							<label for="edit-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -316,9 +313,9 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-status">
 								  <option></option>
-								    <c:forEach items="${clueStateList}" var="cs">
-								      <option value="${cs.id}">${cs.value}</option>
-								    </c:forEach>
+                                    <c:forEach items="${clueStateList}" var="cs">
+                                        <option value="${cs.id}">${cs.value}</option>
+                                    </c:forEach>
 								</select>
 							</div>
 						</div>
@@ -328,9 +325,9 @@
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-source">
 								  <option></option>
-								    <c:forEach items="${sourceList}" var="sl">
-								      <option value="${sl.id}">${sl.value}</option>
-								    </c:forEach>
+                                    <c:forEach items="${sourceList}" var="sl">
+                                        <option value="${sl.id}">${sl.value}</option>
+                                    </c:forEach>
 								</select>
 							</div>
 						</div>
@@ -424,9 +421,9 @@
 				      <div class="input-group-addon">线索来源</div>
 					  <select class="form-control">
 					  	  <option></option>
-					  	    <c:forEach items="${sourceList}" var="sl">
-							   <option value="${sl.id}">${sl.value}</option>
-						    </c:forEach>
+                          <c:forEach items="${sourceList}" var="sl">
+                              <option value="${sl.id}">${sl.value}</option>
+                          </c:forEach>
 					  </select>
 				    </div>
 				  </div>
@@ -454,9 +451,9 @@
 				      <div class="input-group-addon">线索状态</div>
 					  <select class="form-control">
 					  	<option></option>
-					  	  <c:forEach items="${clueStateList}" var="cs">
-						    <option value="${cs.id}">${cs.value}</option>
-						  </c:forEach>
+                          <c:forEach items="${clueStateList}" var="cs">
+                              <option value="${cs.id}">${cs.value}</option>
+                          </c:forEach>
 					  </select>
 				    </div>
 				  </div>
@@ -501,7 +498,7 @@
 						</tr>
                         <tr class="active">
                             <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
+                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">李四先生</a></td>
                             <td>动力节点</td>
                             <td>010-84846003</td>
                             <td>12345678901</td>
@@ -552,4 +549,5 @@
 		
 	</div>
 </body>
+
 </html>

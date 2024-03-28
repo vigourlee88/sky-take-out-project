@@ -172,6 +172,5 @@
       join tbl_user u1 on cr.create_by=u1.id
       left join tbl_user u2 on cr.edit_by=u2.id
       where cr.clue_id=#{clueId}
-      <!-- 根据线索的id查询 -->
   </select>
 </mapper>

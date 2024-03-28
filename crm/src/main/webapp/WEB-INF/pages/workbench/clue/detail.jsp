@@ -1,13 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-  String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
-
+String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 %>
 <html>
 <head>
-   <base href="<%=basePath%>">
+	<base href="<%=basePath%>">
 <meta charset="UTF-8">
 
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
@@ -53,6 +51,65 @@
 		$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
 		});
+
+		//给"关联市场活动"按钮添加单击事件
+		$("#bundActivityBtn").click(function () {
+			//初始化工作
+			//清空搜索框
+			//$("#searchActivityTxt").val("");
+			//清空搜索的市场活动列表
+			//$("#tBody").html("");
+
+			//弹出"线索关联市场活动"的模态窗口
+			$("#bundModal").modal("show");
+		});
+
+		//给市场活动搜索框添加键盘弹起事件
+		$("#searchActivityTxt").keyup(function () {
+			//收集参数
+			//this当前正在发生事件的元素的dom对象
+		    //从框里取value属性值
+		    //在明细页面中在作用域中，使用EL表达式获取,必须加''
+			var activityName=this.value;
+			var clueId='${clue.id}';
+			//发送请求
+			//查询不需表单验证
+		    //发送请求
+		    //参数名:参数值 要和controller中形参的名，保持一致
+			$.ajax({
+				url:'workbench/clue/queryActivityForDetailByNameClueId.do',
+				data:{
+					activityName:activityName,
+					clueId:clueId
+				},
+				type:'post',
+				dataType:'json',
+				success:function (data) {
+					//data是响应信息 js变量，即数组，里面一个一个activity对象
+			        //遍历数组,显示搜索到市场活动列表
+			        //jstl是遍历作用域中的数据
+			        //使用each(遍历哪个数组，回调函数)
+					//遍历data，显示搜索到的市场活动列表
+					//input标签表单组件优先使用value属性绑定
+                    //obj,js变量不能直接使用需要加"+obj.id+"
+                    //下标从0开始，循环变量obj,js变量不能直接使用需要加""
+					var htmlStr="";
+					$.each(data,function (index,obj) {
+						htmlStr+="<tr>";
+						htmlStr+="<td><input type=\"checkbox\" value=\""+obj.id+"\"/></td>";
+						htmlStr+="<td>"+obj.name+"</td>";
+						htmlStr+="<td>"+obj.startDate+"</td>";
+						htmlStr+="<td>"+obj.endDate+"</td>";
+						htmlStr+="<td>"+obj.owner+"</td>";
+						htmlStr+="</tr>";
+					});
+					//覆盖显示到tBody中
+					$("#tBody").html(htmlStr);
+				}
+			});
+		});
+
+		
 	});
 	
 </script>
@@ -74,7 +131,7 @@
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+						    <input type="text" id="searchActivityTxt" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -90,8 +147,8 @@
 								<td></td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
+						<tbody id="tBody">
+							<%--<tr>
 								<td><input type="checkbox"/></td>
 								<td>发传单</td>
 								<td>2020-10-10</td>
@@ -104,13 +161,13 @@
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
-							</tr>
+							</tr>--%>
 						</tbody>
 					</table>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+					<button type="button" class="btn btn-primary" id="saveBundActivityBtn">关联</button>
 				</div>
 			</div>
 		</div>
@@ -128,7 +185,7 @@
 			<h3>${clue.fullname}${clue.appellation} <small>${clue.company}</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" onclick="window.location.href='convert.html';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
+			<button type="button" class="btn btn-default" id="convertClueBtn"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
 			
 		</div>
 	</div>
@@ -228,10 +285,10 @@
 		<div class="page-header">
 			<h4>备注</h4>
 		</div>
-		
+
 		<c:forEach items="${remarkList}" var="remark">
-		   <div class="remarkDiv" id="div_${remark.id}" style="height: 60px;">
-			<img title="${remark.createBy}" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
+			<div class="remarkDiv" id="div_${remark.id}" style="height: 60px;">
+				<img title="${remark.createBy}" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 				<div style="position: relative; top: -40px; left: 40px;" >
 					<h5>${remark.noteContent}</h5>
 					<font color="gray">线索</font> <font color="gray">-</font> <b>${clue.fullname}${clue.appellation}-${clue.company}</b> <small style="color: gray;"> ${remark.editFlag=='0'?remark.createTime:remark.editTime} 由${remark.editFlag=='0'?remark.createBy:remark.editBy}${remark.editFlag=='0'?'创建':'修改'}</small>
@@ -241,11 +298,12 @@
 						<a class="myHref" name="deleteA" remarkId="${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					</div>
 				</div>
-		  </div>
+			</div>
 		</c:forEach>
+
 		<!-- 备注1 -->
 		<%--<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
+			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
 				<h5>哎呦！</h5>
 				<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
@@ -259,7 +317,7 @@
 		
 		<!-- 备注2 -->
 		<%--<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="../../image/user-thumbnail.png" style="width: 30px; height:30px;">
+			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
 				<h5>呵呵！</h5>
 				<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
@@ -299,26 +357,24 @@
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>
-					
-					    <c:forEach items="${activityList}" var="act">
-						      <tr>
+					<tbody id="relationedTBody">
+						<c:forEach items="${activityList}" var="act">
+							<tr id="tr_${act.id}">
 								<td>${act.name}</td>
 								<td>${act.startDate}</td>
 								<td>${act.endDate}</td>
 								<td>${act.owner}</td>
-								<td><a href="javascript:void(0);" activityId="${act.id}" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-							  </tr>
-					    </c:forEach>
-						
+								<td><a href="javascript:void(0);" activityId="${act.id}"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
+							</tr>
+						</c:forEach>
 						<%--<tr>
 							<td>发传单</td>
 							<td>2020-10-10</td>
 							<td>2020-10-20</td>
 							<td>zhangsan</td>
 							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-						</tr>--%>
-						<%--<tr>
+						</tr>
+						<tr>
 							<td>发传单</td>
 							<td>2020-10-10</td>
 							<td>2020-10-20</td>
@@ -330,7 +386,7 @@
 			</div>
 			
 			<div>
-				<a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
+				<a href="javascript:void(0);" id="bundActivityBtn" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
 			</div>
 		</div>
 	</div>

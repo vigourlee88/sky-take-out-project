@@ -1,7 +1,9 @@
 package com.bjpowernode.crm.workbench.web.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -104,5 +106,17 @@ public class ClueController {
 		request.setAttribute("activityList", activityList);
 		// 请求转发
 		return "workbench/clue/detail";
+	}
+
+	@RequestMapping("/workbench/clue/queryActivityForDetailByNameClueId.do")
+	public @ResponseBody Object queryActivityForDetailByNameClueId(String activityName, String clueId) {
+		// 封装参数(activityName,clueId)放入map中
+		Map<String, Object> map = new HashMap<>();
+		map.put("activityName", activityName);
+		map.put("clueId", clueId);
+		// 调用service层方法，查询市场活动信息
+		List<Activity> activityList = activityService.queryActivityForDetailByNameClueId(map);
+		// 根据查询结果，返回响应信息
+		return activityList;// [],对象使用{}
 	}
 }

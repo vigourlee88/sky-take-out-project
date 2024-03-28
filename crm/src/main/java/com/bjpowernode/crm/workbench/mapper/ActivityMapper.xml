@@ -304,7 +304,18 @@
         from tbl_activity a
         join tbl_user u on a.owner=u.id
         join tbl_clue_activity_relation car on a.id=car.activity_id
-        <!-- 内连接上tbl_clue_activity_relation，关联关系表的字段了，查询条件 -->
         where car.clue_id=#{clueId}
+  </select>
+  
+  <select id="selectActivityForDetailByNameClueId" parameterType="map" resultMap="BaseResultMap">
+        select a.id,a.name,a.start_date,a.end_date,u.name as owner
+        from tbl_activity a
+        join tbl_user u on a.owner=u.id
+        where a.name like '%' #{activityName} '%' and a.id not in (
+            select activity_id
+            from tbl_clue_activity_relation  
+            where clue_id=#{clueId}
+            <!-- 排除多个使用not in()子查询跟线索id关联过的市场活动id -->
+        )
   </select>
 </mapper>
