@@ -70,11 +70,40 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
         
-        <table tableName="tbl_activity" domainObjectName="Activity"
+        <!-- 表名，每次新生成时，要注释掉原来的表 -->
+        <table tableName="tbl_clue_activity_relation" domainObjectName="ClueActivityRelation"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
+        
+        <!-- <table tableName="tbl_clue_remark" domainObjectName="ClueRemark"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table> -->
+        
+        <!-- <table tableName="tbl_clue" domainObjectName="Clue"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table> -->
+        
+        <!-- <table tableName="tbl_dic_value" domainObjectName="DicValue"
                        enableCountByExample="false" enableUpdateByExample="false"
                        enableDeleteByExample="false" enableSelectByExample="false"
                        selectByExampleQueryId="false">
-        </table>
+        </table> -->
+        <!-- <table tableName="tbl_activity_remark" domainObjectName="ActivityRemark"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>  -->
+        <!-- <table tableName="tbl_activity" domainObjectName="Activity"
+                       enableCountByExample="false" enableUpdateByExample="false"
+                       enableDeleteByExample="false" enableSelectByExample="false"
+                       selectByExampleQueryId="false">
+        </table> -->
         
         <!--  这一次根据哪个表生成代码，只把这一张表打开就行，一定要把以前生成过的表注释掉 ,要不然重新生成代码会把以前写代码全部覆盖了-->
         <!-- <table tableName="tbl_user" domainObjectName="User"
@@ -91,12 +120,6 @@
 
 
         <table tableName="tbl_clue" domainObjectName="Clue"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false">
-        </table>
-
-        <table tableName="tbl_clue_activity_relation" domainObjectName="ClueActivityRelation"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
