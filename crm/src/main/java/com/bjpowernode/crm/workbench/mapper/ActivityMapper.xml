@@ -318,4 +318,15 @@
             <!-- 排除多个使用not in()子查询跟线索id关联过的市场活动id -->
         )
   </select>
+  
+  <select id="selectActivityForDetailByIds" parameterType="string" resultMap="BaseResultMap">
+        select a.id,a.name,a.start_date,a.end_date,u.name as owner
+        from tbl_activity a
+        join tbl_user u on a.owner=u.id
+        where a.id in 
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+          #{id}
+        </foreach>
+        <!--一个使用=, 多个使用in () -->
+  </select>
 </mapper>

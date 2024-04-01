@@ -142,4 +142,11 @@ public interface ActivityMapper {
 	 */
 	List<Activity> selectActivityForDetailByNameClueId(Map<String, Object> map);
 
+	/**
+	 * 根据ids数组 查询市场活动的明细信息
+	 * 
+	 * @param ids
+	 * @return
+	 */
+	List<Activity> selectActivityForDetailByIds(String[] ids);
 }

@@ -1,5 +1,6 @@
 package com.bjpowernode.crm.workbench.web.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,8 +24,10 @@ import com.bjpowernode.crm.settings.service.DicValueService;
 import com.bjpowernode.crm.settings.service.UserService;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.Clue;
+import com.bjpowernode.crm.workbench.domain.ClueActivityRelation;
 import com.bjpowernode.crm.workbench.domain.ClueRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
+import com.bjpowernode.crm.workbench.service.ClueActivityRelationService;
 import com.bjpowernode.crm.workbench.service.ClueRemarkService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 
@@ -45,6 +48,9 @@ public class ClueController {
 
 	@Autowired
 	private ActivityService activityService;
+
+	@Autowired
+	private ClueActivityRelationService clueActivityRelationService;
 
 	// 跳转页面
 	@RequestMapping("/workbench/clue/index.do")
@@ -118,5 +124,44 @@ public class ClueController {
 		List<Activity> activityList = activityService.queryActivityForDetailByNameClueId(map);
 		// 根据查询结果，返回响应信息
 		return activityList;// [],对象使用{}
+	}
+
+	@RequestMapping("/workbench/clue/saveBund.do")
+	public @ResponseBody Object saveBund(String[] activityId, String clueId) {
+		// 封装参数(把参数封装在关联关系的多个实体类对象中)
+		ClueActivityRelation car = null;
+		List<ClueActivityRelation> relationList = new ArrayList<>();
+
+		for (String ai : activityId) {
+			car = new ClueActivityRelation();
+			car.setActivityId(ai);
+			car.setClueId(clueId);
+			car.setId(UUIDUtils.getUUID());
+
+			relationList.add(car);
+		}
+
+		ReturnObject returnObject = new ReturnObject();
+		try {
+			// 调用service层方法，批量保存线索和市场活动的关联关系(注入)
+			int ret = clueActivityRelationService.saveCreateClueActivityRelationByList(relationList);
+			if (ret > 0) {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+
+				List<Activity> activityList = activityService.queryActivityForDetailByIds(activityId);
+				returnObject.setRetData(activityList);
+
+			} else {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				returnObject.setMessage("系统忙,请稍后再试...");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("系统忙,请稍后再试...");
+		}
+		return returnObject;
+
 	}
 }

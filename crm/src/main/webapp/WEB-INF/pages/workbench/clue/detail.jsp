@@ -56,9 +56,9 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 		$("#bundActivityBtn").click(function () {
 			//初始化工作
 			//清空搜索框
-			//$("#searchActivityTxt").val("");
+			$("#searchActivityTxt").val("");
 			//清空搜索的市场活动列表
-			//$("#tBody").html("");
+			$("#tBody").html("");
 
 			//弹出"线索关联市场活动"的模态窗口
 			$("#bundModal").modal("show");
@@ -106,6 +106,59 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 					//覆盖显示到tBody中
 					$("#tBody").html(htmlStr);
 				}
+			});
+		});
+		
+		//给"关联"按钮添加单击事件
+		$("#saveBundActivityBtn").click(function(){
+			//有参数，收集参数
+			//获取列表中所有被选中的checkbox
+			var chckedIds=$("#tBody input[type='checkbox']:checked");
+			//表单验证
+			if(chckedIds.size()==0){
+				alert("请选择要关联的市场活动");
+				return;
+			}
+			
+			var ids="";
+			//遍历数组chckedIds(js变量不能使用jstl遍历),每一个checkbox绑定的value属性值
+			$.each(chckedIds,function(index,obj){//activityId=xxxx&activityId=xxxx&....&activityId=xxxx&
+
+				ids+="activityId="+this.value+"&";//activityId=xxxx&activityId=xxxx&....&activityId=xxxx&clueId=xxxxx
+			});
+			//请求从作用域中取，在页面取EL表达式
+			ids+="clueId=${clue.id}";
+			
+			//发送请求
+			$.ajax({
+				url:'workbench/clue/saveBund.do',
+				data:ids,
+				type:'post',
+				dataType:'json',
+				success:function(data){
+					if(data.code=="1"){
+						//关闭模态窗口
+						$("#bundModal").modal("hide");
+						//刷新已经关联过的市场活动列表
+						var htmlStr="";
+						$.each(data.retData,function(index,obj){//obj js变量
+						    htmlStr+="<tr id=\"tr_"+obj.id+"\">";
+						    htmlStr+="<td>"+obj.name+"</td>";
+						    htmlStr+="<td>"+obj.startDate+"</td>";
+						    htmlStr+="<td>"+obj.endDate+"</td>";
+						    htmlStr+="<td>"+obj.owner+"</td>";
+						    htmlStr+="<td><a href=\"javascript:void(0);\" activityId=\""+obj.id+"\"  style=\"text-decoration: none;\"><span class=\"glyphicon glyphicon-remove\"></span>解除关联</a></td>";
+						    htmlStr+="</tr>";
+						});
+						$("#relationedTBody").append(htmlStr);//追加显示
+					}else{
+						//提示信息
+						alert(data.message);
+						//模态窗口不关闭
+						$("#bundModal").modal("show");
+					}
+				}
+				
 			});
 		});
 

@@ -27,4 +27,7 @@ public interface ActivityService {
 	List<Activity> queryActivityForDetailByClueId(String clueId);
 
 	List<Activity> queryActivityForDetailByNameClueId(Map<String, Object> map);
+
+	// 根据id组成的数组来查询市场活动的明细信息
+	List<Activity> queryActivityForDetailByIds(String[] ids);
 }
