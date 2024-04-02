@@ -162,6 +162,37 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 			});
 		});
 
+		//给所有的"解除关联"按钮添加单击事件
+		//不是固有元素，有可能是动态拼接的要使用on("事件类型","目标元素",function(){})
+		$("#relationedTBody").on("click","a",function(){
+			//收集参数
+			var activityId=$(this).attr("activityId");//自定义的属性，获取使用attr("获取哪个属性"),this是dom对象，$(this)是jquery对象
+			var clueId="${clue.id}";//作用域中获取，EL表达式jstl必须加""		
+			
+			if(window.confirm("确定删除吗?")){
+				//发送请求
+				$.ajax({
+					url:'workbench/clue/saveUnbund.do',
+					data:{
+						activityId:activityId,
+						clueId:clueId
+					},
+					type:'post',
+					dataType:'json',
+					success:function(data){
+						if(data.code=="1"){
+							//刷新已经关联的市场活动列表,添加动态标签的id，和或有的
+							$("#tr_"+activityId).remove();
+						}else{
+							//提示信息
+							alert(data.message);
+						}
+					}
+					
+				});
+			}
+			
+		});
 		
 	});
 	

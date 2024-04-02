@@ -164,4 +164,27 @@ public class ClueController {
 		return returnObject;
 
 	}
+
+	@RequestMapping("/workbench/clue/saveUnbund.do")
+	public @ResponseBody Object saveUnbund(ClueActivityRelation relation) {// 定义实体类的参数，在接收的同时封装好了
+
+		ReturnObject returnObject = new ReturnObject();
+		try {
+			// 调用service层方法，删除线索和市场活动的关联关系
+			int ret = clueActivityRelationService.deleteClueActivityRelationByClueIdActivityId(relation);
+			if (ret > 0) {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+			} else {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				returnObject.setMessage("系统忙,请稍后再试...");
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("系统忙,请稍后再试...");
+		}
+		return returnObject;
+
+	}
 }

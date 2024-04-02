@@ -60,4 +60,13 @@ public interface ClueActivityRelationMapper {
 	 * @return
 	 */
 	int insertClueActivityRelationByList(List<ClueActivityRelation> list);
+
+	/**
+	 * 根据clueId和activityId，删除线索和市场活动的关联关系
+	 * 
+	 * @param clueActivityRelation
+	 * @return
+	 */
+	int deleteClueActivityRelationByClueIdActivityId(ClueActivityRelation relation);
+
 }
