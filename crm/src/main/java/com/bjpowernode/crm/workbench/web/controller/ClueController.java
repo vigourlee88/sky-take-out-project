@@ -185,6 +185,17 @@ public class ClueController {
 			returnObject.setMessage("系统忙,请稍后再试...");
 		}
 		return returnObject;
+	}
 
+	@RequestMapping("/workbench/clue/toConvert.do")
+	public String toConvert(String id, HttpServletRequest request) {
+		// 调用 service层方法，查询线索的明细信息
+		Clue clue = clueService.queryClueForDetailById(id);
+		List<DicValue> stageList = dicValueService.queryDicValueByTypeCode("stage");
+		// 把数据保存到作用域request中
+		request.setAttribute("clue", clue);
+		request.setAttribute("stageList", stageList);
+		// 请求转发
+		return "workbench/clue/convert";
 	}
 }
