@@ -30,4 +30,6 @@ public interface ActivityService {
 
 	// 根据id组成的数组来查询市场活动的明细信息
 	List<Activity> queryActivityForDetailByIds(String[] ids);
+
+	List<Activity> queryActivityForConvertByNameClueId(Map<String, Object> map);
 }

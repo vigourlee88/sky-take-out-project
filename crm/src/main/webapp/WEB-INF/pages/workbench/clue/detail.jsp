@@ -201,8 +201,7 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 			//发送同步请求
 			//js中发的话使用以下
 			//客户端向后台发请求3种途径:地址栏，超级链接，Form表单
-			//window:整个窗口location:地址栏href:url值
-	
+			//window:整个窗口location:地址栏href:url值	
 			window.location.href="workbench/clue/toConvert.do?id="+id;
 		});
 		

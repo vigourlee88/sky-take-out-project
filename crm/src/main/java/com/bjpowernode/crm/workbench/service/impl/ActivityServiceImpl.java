@@ -90,4 +90,10 @@ public class ActivityServiceImpl implements ActivityService {
 		return activityMapper.selectActivityForDetailByIds(ids);
 	}
 
+	@Override
+	public List<Activity> queryActivityForConvertByNameClueId(Map<String, Object> map) {
+
+		return activityMapper.selectActivityForConvertByNameClueId(map);
+	}
+
 }

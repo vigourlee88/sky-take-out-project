@@ -198,4 +198,18 @@ public class ClueController {
 		// 请求转发
 		return "workbench/clue/convert";
 	}
+
+	@RequestMapping("/workbench/clue/queryActivityForConvertByNameClueId.do")
+	public @ResponseBody Object queryActivityForConvertByNameClueId(String activityName, String clueId) {
+		// 封装参数
+		Map<String, Object> map = new HashMap<>();
+		map.put("activityName", activityName);
+		map.put("clueId", clueId);
+		// 调用service层方法,查询市场活动
+		List<Activity> activityList = activityService.queryActivityForConvertByNameClueId(map);
+		// 根据查询结果，返回反应信息
+		return activityList;
+
+	}
+
 }
