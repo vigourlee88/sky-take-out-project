@@ -71,11 +71,17 @@
         </javaClientGenerator>
         
         <!-- 表名，每次新生成时，要注释掉原来的表 -->
-        <table tableName="tbl_clue_activity_relation" domainObjectName="ClueActivityRelation"
+        <table tableName="tbl_customer" domainObjectName="Customer"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
         </table>
+        
+        <!-- <table tableName="tbl_clue_activity_relation" domainObjectName="ClueActivityRelation"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table> -->
         
         <!-- <table tableName="tbl_clue_remark" domainObjectName="ClueRemark"
                enableCountByExample="false" enableUpdateByExample="false"
