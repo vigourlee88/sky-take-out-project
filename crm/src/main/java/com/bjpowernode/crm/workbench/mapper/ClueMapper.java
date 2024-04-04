@@ -66,4 +66,12 @@ public interface ClueMapper {
 	 * @return
 	 */
 	Clue selectClueForDetailById(String id);
+
+	/**
+	 * 根据id来查询线索的信息 这里关联字段要查id，不是给用户看的
+	 * 
+	 * @param id
+	 * @return
+	 */
+	Clue selectClueById(String id);
 }

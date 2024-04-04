@@ -96,6 +96,48 @@ String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.ge
 			$("#searchActivityModal").modal("hide");
 			
 		});
+		
+		//给"转换"按钮添加单击事件
+		$("#saveConvertClueBtn").click(function(){
+			//收集参数
+			var clueId='${clue.id}';
+			var money=$.trim($("#amountOfMoney").val());
+			var name=$.trim($("#tradeName").val());
+			var expectedDate=$("#expectedClosingDate").val();
+			var stage=$("#stage").val();
+			var activityId=$("#activityId").val();
+			var isCreateTran=$("#isCreateTransaction").prop("checked");//获取checkbox的属性值
+			//表单验证
+			//money是非负整数
+			
+			//发送请求
+			$.ajax({
+				
+				url:'workbench/clue/convertClue.do',
+				data:{
+			        clueId:clueId,
+			        money:money,
+			        name:name,
+			        expectedDate:expectedDate,
+			        stage:stage,
+			        activityId:activityId,
+			        isCreateTran:isCreateTran			
+				},
+				type:'post',
+				dataType:'json',
+				//处理响应
+				success:function(data){
+					if(data.code=="1"){
+						//跳转到线索主页面
+						window.location.href="workbench/clue/index.do";	
+					}else{
+						//提示信息
+						alert(data.message);
+					}
+				}
+			});
+			
+		});
 	});
 </script>
 
