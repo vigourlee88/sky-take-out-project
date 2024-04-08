@@ -14,6 +14,7 @@ import com.bjpowernode.crm.settings.domain.DicValue;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.settings.service.DicValueService;
 import com.bjpowernode.crm.settings.service.UserService;
+import com.bjpowernode.crm.workbench.service.CustomerService;
 
 @Controller
 public class TranController {
@@ -23,6 +24,9 @@ public class TranController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private CustomerService customerService;
 
 	@RequestMapping("/workbench/transaction/index.do")
 	public String index(HttpServletRequest request) {
@@ -64,6 +68,16 @@ public class TranController {
 		String possibility = bundle.getString(stageValue);
 		// 返回响应信息
 		return possibility;
+	}
+
+	@RequestMapping("/workbench/transaction/queryAllCustomerName.do")
+	public @ResponseBody Object queryAllCustomerName(String customerName) {
+
+		// 调用service层方法，查询所有客户名称
+		// List<String> customerNameList = customerService.queryAllCustomerName();
+		List<String> customerNameList = customerService.queryCustomerNameByName(customerName);
+		// 根据查询结果，返回响应信息
+		return customerNameList;// ['xxxx','xxxxx',......
 	}
 
 }

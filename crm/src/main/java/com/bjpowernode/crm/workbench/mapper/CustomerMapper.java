@@ -1,5 +1,7 @@
 package com.bjpowernode.crm.workbench.mapper;
 
+import java.util.List;
+
 import com.bjpowernode.crm.workbench.domain.Customer;
 
 public interface CustomerMapper {
@@ -58,4 +60,13 @@ public interface CustomerMapper {
 	 * @return
 	 */
 	int insertCustomer(Customer customer);
+
+	/**
+	 * 查询所有的客户名称
+	 * 
+	 * @return
+	 */
+	// List<String> selectAllCustomerName();
+	List<String> selectCustomerNameByName(String name);
+
 }
