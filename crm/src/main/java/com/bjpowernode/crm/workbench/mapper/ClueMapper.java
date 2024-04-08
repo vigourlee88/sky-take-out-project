@@ -74,4 +74,12 @@ public interface ClueMapper {
 	 * @return
 	 */
 	Clue selectClueById(String id);
+
+	/**
+	 * 根据id来删除线索的信息
+	 * 
+	 * @param id
+	 * @return
+	 */
+	int deleteClueById(String id);
 }
