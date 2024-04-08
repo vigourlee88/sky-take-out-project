@@ -16,7 +16,44 @@
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
- 
+<script type="text/javascript" >
+    $(function(){
+    	//给"阶段"下拉框添加change事件
+    	$("#create-transactionStage").change(function(){
+    		//收集参数
+    		//获取阶段的名字
+    		//select下拉框this.value得到它的option的value值id
+    		//获取jquery对象的内
+    		//$(this)代表select标签
+    		//缩小范围，选中option的对象
+    		//alert($(this).find("option:selected").text());
+    		//或者父子选择器
+    		var stageValue=$("#create-transactionStage option:selected").text();
+    		//表单验证
+    		if(stageValue==""){
+    			//清空可能性输入框
+    			$("#create-possibility").val("");
+    			return;
+    		}
+    		//发送请求
+    		$.ajax({
+    			url:'workbench/transaction/getPossibilityByStage.do',
+    			data:{
+    				stageValue:stageValue
+    			},
+    			type:'post',
+    			dataType:'json',
+    			success:function(data){
+    				//获取到的可能性 显示到输入框中
+    				$("#create-possibility").val(data);
+    			}
+    			
+    		});
+    				
+    	});
+    });
+
+</script>
 
 </head>
 <body>
@@ -185,7 +222,7 @@
 			</div>
 			<label for="create-possibility" class="col-sm-2 control-label">可能性</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-possibility">
+				<input type="text" class="form-control" id="create-possibility" readonly>
 			</div>
 		</div>
 		

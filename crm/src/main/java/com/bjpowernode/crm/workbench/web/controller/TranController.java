@@ -1,12 +1,14 @@
 package com.bjpowernode.crm.workbench.web.controller;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bjpowernode.crm.settings.domain.DicValue;
 import com.bjpowernode.crm.settings.domain.User;
@@ -53,6 +55,15 @@ public class TranController {
 
 		// 请求转发
 		return "workbench/transaction/save";
+	}
+
+	@RequestMapping("/workbench/transaction/getPossibilityByStage.do")
+	public @ResponseBody Object getPossibilityByStage(String stageValue) {
+		// 解析properties配置文件，根据阶段获取可能性
+		ResourceBundle bundle = ResourceBundle.getBundle("possibility");
+		String possibility = bundle.getString(stageValue);
+		// 返回响应信息
+		return possibility;
 	}
 
 }
