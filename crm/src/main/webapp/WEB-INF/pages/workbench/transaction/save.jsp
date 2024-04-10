@@ -16,10 +16,12 @@
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<!-- 引入自动补全开发包 -->
+<script type="text/javascript" src="jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
 <script type="text/javascript" >
     $(function(){
     	//给"阶段"下拉框添加change事件
-    	$("#create-transactionStage").change(function(){
+    	$("#create-stage").change(function(){
     		//收集参数
     		//获取阶段的名字
     		//select下拉框this.value得到它的option的value值id
@@ -28,7 +30,7 @@
     		//缩小范围，选中option的对象
     		//alert($(this).find("option:selected").text());
     		//或者父子选择器
-    		var stageValue=$("#create-transactionStage option:selected").text();
+    		var stageValue=$("#create-stage option:selected").text();
     		//表单验证
     		if(stageValue==""){
     			//清空可能性输入框
@@ -50,6 +52,86 @@
     			
     		});
     				
+    	});
+    	
+    	//当容器加载完成之后，对容器调用工具函数(可网上查询typeahead)
+    	$("#create-customerName").typeahead({
+    		source:function(jquery,process){
+	    	　　//每次键盘弹起，都自动触发本函数；我们可以向后台送请求，查询客户表中所有的名称，把客户名称以[]字符串形式返回前台，赋值给source
+　　　　　　　　 //process：是个函数，能够将['xxx','xxxxx','xxxxxx',.....]字符串赋值给source，从而完成自动补全
+                //var customerName=$("#customerName").val();   
+	    	    //data:{customerName:customerName},
+                //jquery：在容器中输入的关键字代替上面的
+                //回到TranController中定义形参customerName
+                    
+                //发送请求
+                $.ajax({
+                	url:'workbench/transaction/queryCustomerNameByName.do',
+                	data:{
+                		customerName:jquery
+                	},
+                	type:'post',
+                	dataType:'json',
+                	success:function(data){//['xxx','xxxxx','xxxxxx',.....]  	
+                	  //动态查询
+                	  process(data);
+                		
+                	}
+                });
+    		}
+    	});
+    	
+    	//给"保存"按钮添加单击事件
+    	$("#saveCreateTranBtn").click(function(){
+    		//收集参数
+			var owner          =$("#create-owner").val();
+			var money          =$.trim($("#create-money").val());
+			var name           =$.trim($("#create-name").val());
+			var expectedDate   =$("#create-expectedDate").val();
+			var customerName   =$.trim($("#create-customerName").val());
+			var stage          =$("#create-stage").val();
+			var type           =$("#create-type").val();
+			var source         =$("#create-source").val();
+			var activityId     =$("#create-activityId").val();
+			var contactsId     =$("#create-contactsId").val();
+			var description    =$.trim($("#create-description").val());
+			var contactSummary =$.trim($("#create-contactSummary").val());
+			var nextContactTime=$("#create-nextContactTime").val();
+			//表单验证(作业)
+            //带*号非空的，非负整数
+    		
+            //发送请求
+            $.ajax({
+            	url:'workbench/transaction/saveCreateTran.do',
+            	data:{
+            		owner          :owner          ,
+					money          :money          ,
+					name           :name           ,
+					expectedDate   :expectedDate   ,
+					customerName   :customerName   ,
+					stage          :stage          ,
+					type           :type           ,
+					source         :source         ,
+					activityId     :activityId     ,
+					contactsId     :contactsId     ,
+					description    :description    ,
+					contactSummary :contactSummary ,
+					nextContactTime:nextContactTime
+      		
+            	},
+            	
+            	type:'post',
+            	dataType:'json',
+            	success:function(data){
+            		if(data.code=="1"){
+            			//跳转到交易主页面
+            			window.location.href="workbench/transaction/index.do";
+            		}else{
+            			//提示信息
+            			alert(data.message);
+            		}
+            	}
+            });
     	});
     });
 
@@ -161,46 +243,46 @@
 	<div style="position:  relative; left: 30px;">
 		<h3>创建交易</h3>
 	  	<div style="position: relative; top: -40px; left: 70%;">
-			<button type="button" class="btn btn-primary">保存</button>
+			<button type="button" class="btn btn-primary" id="saveCreateTranBtn">保存</button>
 			<button type="button" class="btn btn-default">取消</button>
 		</div>
 		<hr style="position: relative; top: -40px;">
 	</div>
 	<form class="form-horizontal" role="form" style="position: relative; top: -30px;">
 		<div class="form-group">
-			<label for="create-transactionOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-owner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-transactionOwner">
+				<select class="form-control" id="create-owner">
 				  <c:forEach items="${userList}" var="u">
 				     <option value="${u.id}">${u.name}</option>
 				  </c:forEach>
 				</select>
 			</div>
-			<label for="create-amountOfMoney" class="col-sm-2 control-label">金额</label>
+			<label for="create-money" class="col-sm-2 control-label">金额</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-amountOfMoney">
+				<input type="text" class="form-control" id="create-money">
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-transactionName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-name" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-transactionName">
+				<input type="text" class="form-control" id="create-name">
 			</div>
-			<label for="create-expectedClosingDate" class="col-sm-2 control-label">预计成交日期<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-expectedDate" class="col-sm-2 control-label">预计成交日期<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-expectedClosingDate">
+				<input type="text" class="form-control" id="create-expectedDate">
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-accountName" class="col-sm-2 control-label">客户名称<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-customerName" class="col-sm-2 control-label">客户名称<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-accountName" placeholder="支持自动补全，输入客户不存在则新建">
+				<input type="text" class="form-control" id="create-customerName" placeholder="支持自动补全，输入客户不存在则新建">
 			</div>
-			<label for="create-transactionStage" class="col-sm-2 control-label">阶段<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-stage" class="col-sm-2 control-label">阶段<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-			  <select class="form-control" id="create-transactionStage">
+			  <select class="form-control" id="create-stage">
 			  	<option></option>
 			  	<c:forEach items="${stageList}" var="so">
 			  	  <option value="${so.id}">${so.value}</option>
@@ -211,9 +293,9 @@
 		
 		
 		<div class="form-group">
-			<label for="create-transactionType" class="col-sm-2 control-label">类型</label>
+			<label for="create-type" class="col-sm-2 control-label">类型</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-transactionType">
+				<select class="form-control" id="create-type">
 				  <option></option>
 				  <c:forEach items="${transactionTypeList}" var="tt">
 				    <option value="${tt.id}">${tt.value}</option>
@@ -227,9 +309,9 @@
 		</div>
 		
 		<div class="form-group">
-			<label for="create-clueSource" class="col-sm-2 control-label">来源</label>
+			<label for="create-source" class="col-sm-2 control-label">来源</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-clueSource">
+				<select class="form-control" id="create-source">
 				  <option></option>
 				  <c:forEach items="${sourceList}" var="s">
 				     <option value="${s.id}">${s.value}</option>
@@ -252,9 +334,9 @@
 		</div>
 		
 		<div class="form-group">
-			<label for="create-describe" class="col-sm-2 control-label">描述</label>
+			<label for="create-description" class="col-sm-2 control-label">描述</label>
 			<div class="col-sm-10" style="width: 70%;">
-				<textarea class="form-control" rows="3" id="create-describe"></textarea>
+				<textarea class="form-control" rows="3" id="create-description"></textarea>
 			</div>
 		</div>
 		

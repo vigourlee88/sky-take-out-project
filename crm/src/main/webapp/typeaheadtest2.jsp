@@ -33,7 +33,7 @@
 	                    
 	                //发送请求
 	                $.ajax({
-	                	url:'workbench/transaction/queryAllCustomerName.do',
+	                	url:'workbench/transaction/queryCustomerNameByName.do',
 	                	data:{
 	                		customerName:jquery
 	                	},

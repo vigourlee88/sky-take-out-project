@@ -69,4 +69,12 @@ public interface CustomerMapper {
 	// List<String> selectAllCustomerName();
 	List<String> selectCustomerNameByName(String name);
 
+	/**
+	 * 根据name精确查询客户
+	 * 
+	 * @param name
+	 * @return
+	 */
+	Customer selectCustomerByName(String name);
+
 }
