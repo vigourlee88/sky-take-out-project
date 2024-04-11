@@ -25,6 +25,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="contact_summary" jdbcType="VARCHAR" property="contactSummary" />
     <result column="next_contact_time" jdbcType="CHAR" property="nextContactTime" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--
@@ -290,7 +291,7 @@
   </insert>
   
   <select id="selectTranForDetailById" parameterType="string" resultMap="BaseResultMap">
-      select t.id,u1.name as owner,t.money,t.name,t.expected_date,c.name as customer_id,dv1.value as stage,dv2.value as type,dv3.value as source,a.name as activity_id,co.fullname as contacts_id,u2.name as create_by,t.create_time,u3.name as edit_by,t.edit_time,t.description,t.contact_summary,t.next_contact_time
+      select t.id,u1.name as owner,t.money,t.name,t.expected_date,c.name as customer_id,dv1.value as stage,dv1.order_no,dv2.value as type,dv3.value as source,a.name as activity_id,co.fullname as contacts_id,u2.name as create_by,t.create_time,u3.name as edit_by,t.edit_time,t.description,t.contact_summary,t.next_contact_time
       from tbl_tran t
       join tbl_user u1 on t.owner=u1.id
       join tbl_customer c on t.customer_id=c.id
@@ -303,5 +304,7 @@
       left join tbl_user u3 on t.edit_by=u3.id
       where t.id=#{id}  
       <!-- 下拉列表都是外键 ,外键可以为空，外连接，主表在左，左外连接-->  
+      <!-- 添加查询字段 dv1.order_no -->
+      <!-- 同时上面ResultMap中添加 <result column="order_no" jdbcType="VARCHAR" property="orderNo" />,Tran中扩展属性orderNo-->
   </select>
 </mapper>

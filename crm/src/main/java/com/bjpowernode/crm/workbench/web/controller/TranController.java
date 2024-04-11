@@ -147,6 +147,10 @@ public class TranController {
 		request.setAttribute("historyList", historyList);
 		// request.setAttribute("possibility", possibility);
 
+		// 调用service方法，查询交易所有的阶段
+		List<DicValue> stageList = dicValueService.queryDicValueByTypeCode("stage");
+		request.setAttribute("stageList", stageList);
+
 		// 请求转发
 		return "workbench/transaction/detail";
 

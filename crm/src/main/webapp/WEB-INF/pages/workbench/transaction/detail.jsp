@@ -118,7 +118,28 @@
 	<!-- 阶段状态 -->
 	<div style="position: relative; left: 40px; top: -50px;">
 		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
+		<!-- 遍历stageList,依次显示每一个阶段对应的图标-->
+		<c:forEach items="${stageList}" var="stage">
+		    <!-- 如果stage就是交易当前所处阶段，则图标显示为map-marker,颜色显示为绿色 -->
+		    <c:if test="${tran.stage==stage.value}">
+		       <span class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="${stage.value}" style="color: #90F790;"></span>
+		       -----------
+		    </c:if>
+		    
+		    <!-- 如果stage处在当前交易所处阶段orderNo前面，则图标显示为对号ok-circle，颜色显示为绿色 -->
+		    <!-- tran.orderNo>stage.orderNo,stage在前面 -->
+		    <c:if test="${tran.orderNo>stage.orderNo}">
+		       <span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="${stage.value}" style="color: #90F790;"></span>
+		       -----------
+		    </c:if>
+		    
+		    <!-- 如果stage处在当前交易所处阶段orderNo后面，则图标显示为对号record，颜色显示为黑色-->
+		    <c:if test="${tran.orderNo<stage.orderNo}">
+		       <span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="${stage.value}"></span>
+		       -----------
+		    </c:if>
+		</c:forEach>
+	 <%--<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
 		-----------
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="需求分析" style="color: #90F790;"></span>
 		-----------
@@ -136,6 +157,7 @@
 		-----------
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="因竞争丢失关闭"></span>
 		-----------
+		 --%>	
 		<span class="closingDate">${tran.expectedDate}</span>
 	</div>
 	
