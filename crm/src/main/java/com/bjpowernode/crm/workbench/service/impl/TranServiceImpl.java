@@ -1,6 +1,7 @@
 package com.bjpowernode.crm.workbench.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import com.bjpowernode.crm.commons.utils.DateUtils;
 import com.bjpowernode.crm.commons.utils.UUIDUtils;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.workbench.domain.Customer;
+import com.bjpowernode.crm.workbench.domain.FunnelVO;
 import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.domain.TranHistory;
 import com.bjpowernode.crm.workbench.mapper.CustomerMapper;
@@ -86,6 +88,12 @@ public class TranServiceImpl implements TranService {
 	public Tran queryTranForDetailById(String id) {
 
 		return tranMapper.selectTranForDetailById(id);
+	}
+
+	@Override
+	public List<FunnelVO> queryCountOfTranGroupByStage() {
+
+		return tranMapper.selectCountOfTranGroupByStage();
 	}
 
 }

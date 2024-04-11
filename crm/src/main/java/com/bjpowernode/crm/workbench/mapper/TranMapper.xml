@@ -307,4 +307,12 @@
       <!-- 添加查询字段 dv1.order_no -->
       <!-- 同时上面ResultMap中添加 <result column="order_no" jdbcType="VARCHAR" property="orderNo" />,Tran中扩展属性orderNo-->
   </select>
+  
+  <select id="selectCountOfTranGroupByStage" resultType="com.bjpowernode.crm.workbench.domain.FunnelVO">
+      select count(*) as value,dv.value as name
+      from tbl_tran t
+      join tbl_dic_value dv on t.stage=dv.id
+      group by t.stage
+      
+  </select>
 </mapper>
