@@ -82,4 +82,10 @@ public class TranServiceImpl implements TranService {
 		tranHistoryMapper.insertTranHistory(tranHistory);
 	}
 
+	@Override
+	public Tran queryTranForDetailById(String id) {
+
+		return tranMapper.selectTranForDetailById(id);
+	}
+
 }

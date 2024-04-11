@@ -156,9 +156,16 @@
   </update>
   
   <insert id="insertTranHistory" parameterType="com.bjpowernode.crm.workbench.domain.TranHistory">
-      
       insert into tbl_tran_history(id, stage, money, expected_date, create_time, create_by, tran_id)
-      values (#{id},#{stage},#{money},#{expectedDate},#{createTime},#{createBy},#{tranId}) 
-      
+      values (#{id},#{stage},#{money},#{expectedDate},#{createTime},#{createBy},#{tranId})    
   </insert>
+  
+  <select id="selectTranHistoryForDetailByTranId" parameterType="string" resultMap="BaseResultMap">
+       select dv.value as stage,th.money,th.expected_date,th.create_time,u.name as create_by
+       from tbl_tran_history th
+       join tbl_dic_value dv on th.stage=dv.id
+       join tbl_user u on th.create_by=u.id
+       where th.tran_id=#{tranId}       
+       <!-- 根据外键查 -->
+  </select>
 </mapper>

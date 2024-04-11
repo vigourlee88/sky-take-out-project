@@ -19,7 +19,12 @@ import com.bjpowernode.crm.settings.domain.DicValue;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.settings.service.DicValueService;
 import com.bjpowernode.crm.settings.service.UserService;
+import com.bjpowernode.crm.workbench.domain.Tran;
+import com.bjpowernode.crm.workbench.domain.TranHistory;
+import com.bjpowernode.crm.workbench.domain.TranRemark;
 import com.bjpowernode.crm.workbench.service.CustomerService;
+import com.bjpowernode.crm.workbench.service.TranHistoryService;
+import com.bjpowernode.crm.workbench.service.TranRemarkService;
 import com.bjpowernode.crm.workbench.service.TranService;
 
 @Controller
@@ -36,6 +41,12 @@ public class TranController {
 
 	@Autowired
 	private TranService tranService;
+
+	@Autowired
+	private TranRemarkService tranRemarkService;
+
+	@Autowired
+	private TranHistoryService tranHistoryService;
 
 	@RequestMapping("/workbench/transaction/index.do")
 	public String index(HttpServletRequest request) {
@@ -109,6 +120,36 @@ public class TranController {
 		}
 
 		return returnObject;
+	}
+
+	@RequestMapping("/workbench/transaction/detailTran.do")
+	public String detailTran(String id, HttpServletRequest request) {// 查看交易明细
+		// 定义形参接收，前台发送来的参数
+		// 调用service层方法，查询数据，
+		// 这样controller就把明细页面所需要的3个数据都查出来了
+		// 交易详细信息
+		Tran tran = tranService.queryTranForDetailById(id);
+		// 交易备注的信息
+		List<TranRemark> remarkList = tranRemarkService.queryTranRemarkForDetailByTranId(id);
+		// 交易历史的信息
+		List<TranHistory> historyList = tranHistoryService.queryTranHistoryForDetailByTranId(id);
+
+		// 根据tran所处 阶段名称tran.getStage() 查询可能性
+		// 查询可能性信息在配置文件中
+		// 解析 配置文件
+		ResourceBundle bundle = ResourceBundle.getBundle("possibility");
+		String possibility = bundle.getString(tran.getStage());
+		tran.setPossibility(possibility);
+
+		// 把数据保存到作用域中
+		request.setAttribute("tran", tran);
+		request.setAttribute("remarkList", remarkList);
+		request.setAttribute("historyList", historyList);
+		// request.setAttribute("possibility", possibility);
+
+		// 请求转发
+		return "workbench/transaction/detail";
+
 	}
 
 }

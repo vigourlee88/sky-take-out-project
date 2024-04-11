@@ -60,4 +60,12 @@ public interface TranRemarkMapper {
 	 * @return
 	 */
 	int insertTranRemarkByList(List<TranRemark> list);
+
+	/**
+	 * 根据tranId查询该交易下所有备注的明细信息
+	 * 
+	 * @param tranId
+	 * @return
+	 */
+	List<TranRemark> selectTranRemarkForDetailByTranId(String tranId);
 }
