@@ -71,11 +71,17 @@
         </javaClientGenerator>
         
         <!-- 表名，每次新生成时，要注释掉原来的表 -->
-        <table tableName="tbl_tran_remark" domainObjectName="TranRemark"
+        
+        <table tableName="tbl_tran_history" domainObjectName="TranHistory"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
-        </table> 
+        </table>
+        <!-- <table tableName="tbl_tran_remark" domainObjectName="TranRemark"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>  -->
         <!-- <table tableName="tbl_tran" domainObjectName="Tran"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
@@ -192,14 +198,7 @@
                        enableDeleteByExample="false" enableSelectByExample="false"
                        selectByExampleQueryId="false">
                 </table> 
-                 
-
-        
-        <table tableName="tbl_transaction_history" domainObjectName="TransactionHistory"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false">
-        </table> -->
+                  -->
       
 
     </context>
